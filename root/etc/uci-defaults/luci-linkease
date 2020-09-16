@@ -1,0 +1,18 @@
+#!/bin/sh
+touch /etc/config/linkease
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@linkease[-1]
+	add ucitrack linkease
+	set ucitrack.@linkease[-1].init=linkease
+#	set ucitrack.@linkease[-1].exec='/etc/init.d/linkease start'
+	commit ucitrack
+EOF
+
+cp -rf /etc/linkeaseinitd /etc/init.d/linkease
+rm -f /etc/linkeaseinitd
+chmod 775 /etc/init.d/linkease
+/etc/init.d/linkease enable
+
+rm -f /tmp/luci-indexcache
+exit 0
